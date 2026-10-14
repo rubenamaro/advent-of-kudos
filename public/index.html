@@ -1,0 +1,1361 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Advent of Kudos</title>
+<meta name="description" content="A team advent calendar of kudos.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%8E%84%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Great+Vibes&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800&family=DM+Mono:wght@400;500&display=swap">
+<style>
+body { margin: 0; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+/* Layout: a single snowy Christmas night. Garland across the top, the glowing tree on the left, today's spotlight and gift-box doors on the right. Stacks on phones. */
+:root {
+  --night-1: #060d24;
+  --night-2: #0c1b3d;
+  --night-3: #14295a;
+  --ink: #f7f1e3;
+  --muted: #b9c4dc;
+  --gold: #f4c452;
+  --gold-deep: #b9811f;
+  --red: #dc2f45;
+  --red-deep: #861325;
+  --pine: #217a4d;
+  --pine-deep: #0d3b26;
+  --ice: #a8d9f2;
+  --paper: #fbf5e8;
+  --paper-ink: #2a1d14;
+  --glass: rgba(255, 255, 255, .065);
+  --glass-strong: rgba(255, 255, 255, .1);
+  --glass-line: rgba(255, 255, 255, .15);
+  --f-display: "Yeseva One", Georgia, "Times New Roman", serif;
+  --f-script: "Great Vibes", "Snell Roundhand", "Apple Chancery", cursive;
+  --f-body: "Nunito Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "DM Mono", ui-monospace, Menlo, monospace;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--night-1); }
+body {
+  background:
+    radial-gradient(120% 70% at 50% 0%, var(--night-3) 0%, var(--night-2) 35%, var(--night-1) 75%) fixed,
+    var(--night-1);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 15.5px;
+  line-height: 1.55;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+#sky { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+.wrap {
+  position: relative; z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-block: 0 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid;
+  gap: 30px;
+}
+h1, h2, h3 { margin: 0; text-wrap: balance; font-weight: 400; }
+p { margin: 0; }
+button, input, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+.eyebrow {
+  font-family: var(--f-mono);
+  font-size: 11.5px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* Garland across the top */
+.garland { display: block; width: 100%; height: 70px; margin-bottom: -6px; overflow: visible; }
+.garland .wire { fill: none; stroke: #23452f; stroke-width: 2.2; }
+.garland .leaf { fill: none; stroke: #2f6b45; stroke-width: 7; stroke-linecap: round; stroke-dasharray: 1 6; opacity: .9; }
+.bulb { animation: twinkle 2.4s ease-in-out infinite; }
+@keyframes twinkle { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+
+/* Header */
+.masthead { display: grid; justify-items: center; text-align: center; gap: 14px; padding-top: 6px; }
+.wordmark {
+  font-family: var(--f-display);
+  font-size: clamp(46px, 9vw, 104px);
+  line-height: .95;
+  letter-spacing: .005em;
+  background: linear-gradient(180deg, #fff6d6 0%, var(--gold) 45%, var(--gold-deep) 100%);
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 2px 0 rgba(0, 0, 0, .35)) drop-shadow(0 0 26px rgba(244, 196, 82, .35));
+  padding: 0 .1em .06em;
+}
+.wordmark .of {
+  font-family: var(--f-script);
+  font-size: .62em;
+  background: linear-gradient(180deg, #ffd0d6, var(--red));
+  -webkit-background-clip: text; background-clip: text;
+  margin: 0 .08em;
+  vertical-align: .05em;
+}
+.masthead .status { max-width: 60ch; color: var(--muted); font-size: 16px; }
+.season { display: inline-flex; align-items: center; gap: 12px; }
+.season::before, .season::after { content: ""; width: 34px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold)); }
+.season::after { transform: scaleX(-1); }
+
+/* Main grid */
+.main { display: grid; gap: 30px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 940px) { .main { grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); } }
+.side { display: grid; gap: 30px; min-width: 0; }
+
+.panel {
+  background: linear-gradient(180deg, var(--glass-strong), var(--glass));
+  border: 1px solid var(--glass-line);
+  border-radius: 24px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .08);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  padding: 24px;
+  min-width: 0;
+}
+.panel-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+.panel-head h2 { font-family: var(--f-display); font-size: 26px; color: var(--ink); }
+
+/* Tree */
+.tree-panel { padding: 24px 18px 20px; overflow: hidden; }
+.stage { position: relative; width: 100%; max-width: 580px; margin: 0 auto; aspect-ratio: 4 / 5; }
+.stage > svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: visible; }
+.rays { transform-origin: 50px 8px; animation: spin 40s linear infinite; }
+.rays.burst { animation-duration: 14s; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.halo { animation: breathe 3.2s ease-in-out infinite; transform-origin: 50px 8px; }
+@keyframes breathe { 0%, 100% { opacity: .55; transform: scale(1); } 50% { opacity: 1; transform: scale(1.12); } }
+.fairy { animation: twinkle 2.2s ease-in-out infinite; }
+.tree-caption { text-align: center; color: var(--muted); font-size: 14px; margin-top: 10px; }
+
+.ghost {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1.5px dashed rgba(247, 241, 227, .28);
+  background: radial-gradient(circle, rgba(255, 255, 255, .08), transparent 70%);
+  pointer-events: none;
+}
+.bauble {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  padding: 0; border: 0; background: none;
+  cursor: pointer;
+  transform-origin: 50% -40%;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .45));
+}
+.bauble .thread {
+  position: absolute; left: 50%; bottom: 96%; width: 1px; height: 38%;
+  background: linear-gradient(180deg, transparent, var(--gold));
+}
+.bauble .cap {
+  position: absolute; left: 50%; top: -10%; width: 32%; height: 17%;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, #8a5d12, #ffe39a 45%, #b9811f);
+  border-radius: 3px 3px 2px 2px;
+  z-index: 2;
+}
+.bauble .cap::before {
+  content: ""; position: absolute; left: 50%; top: -55%; width: 55%; height: 70%;
+  transform: translateX(-50%); border: 1.5px solid var(--gold); border-bottom: 0; border-radius: 50% 50% 0 0;
+}
+.bauble .ball {
+  position: relative; display: grid; place-items: center;
+  width: 100%; aspect-ratio: 1; border-radius: 50%;
+  padding: 9%;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255, 255, 255, .85) 0 6%, rgba(255, 255, 255, 0) 20%),
+    radial-gradient(circle at 40% 35%, var(--ring-hi, #ff8a98), var(--ring, var(--red)) 45%, var(--ring-lo, var(--red-deep)) 100%);
+}
+.bauble .ball .face { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; display: grid; place-items: center; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .35); background: var(--ring-lo, var(--red-deep)); }
+.bauble .ball img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bauble .ball::after {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, .7) 0 5%, rgba(255, 255, 255, 0) 18%),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0) 58%, rgba(0, 0, 0, .35) 100%);
+  pointer-events: none;
+}
+.bauble .sparkle {
+  position: absolute; right: -6%; top: 6%; width: 28%; aspect-ratio: 1;
+  background: radial-gradient(circle, #fff 0 12%, transparent 13%), conic-gradient(from 45deg, transparent 0 20%, #fff 22% 28%, transparent 30% 45%, #fff 47% 53%, transparent 55% 70%, #fff 72% 78%, transparent 80% 95%, #fff 97%);
+  -webkit-mask: radial-gradient(circle, #000 0 30%, transparent 62%); mask: radial-gradient(circle, #000 0 30%, transparent 62%);
+  opacity: 0; transform: scale(.4); transition: opacity .3s, transform .3s;
+  z-index: 3; pointer-events: none;
+}
+.bauble:hover .sparkle, .bauble:focus-visible .sparkle { opacity: 1; transform: scale(1) rotate(20deg); }
+.bauble:hover, .bauble:focus-visible { animation: swing 1.3s ease-in-out; z-index: 4; }
+.bauble.fresh { animation: hang 1.2s cubic-bezier(.3, 1.45, .5, 1) both; animation-delay: var(--delay, 0s); }
+@keyframes hang {
+  0% { transform: translate(-50%, -190%) scale(.2) rotate(-16deg); opacity: 0; }
+  55% { opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1) rotate(0); opacity: 1; }
+}
+@keyframes swing {
+  0%, 100% { transform: translate(-50%, -50%) rotate(0); }
+  30% { transform: translate(-50%, -50%) rotate(8deg); }
+  65% { transform: translate(-50%, -50%) rotate(-6deg); }
+}
+.initials { font-family: var(--f-display); color: #fff; font-size: clamp(11px, 2.2vw, 20px); letter-spacing: .02em; text-shadow: 0 1px 2px rgba(0, 0, 0, .4); }
+
+/* Today spotlight */
+.today { display: grid; gap: 18px; position: relative; overflow: hidden; }
+.today::before {
+  content: ""; position: absolute; inset: -40% -20% auto; height: 80%;
+  background: radial-gradient(closest-side, rgba(244, 196, 82, .18), transparent);
+  pointer-events: none;
+}
+.honoree { display: flex; gap: 22px; align-items: center; flex-wrap: wrap; position: relative; }
+.portrait-wrap { position: relative; width: 132px; height: 132px; flex: none; display: grid; place-items: center; }
+.portrait-wrap::before {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  background: conic-gradient(var(--gold), var(--red), var(--gold), var(--pine), var(--gold));
+  animation: spin 6s linear infinite;
+  filter: blur(.3px);
+}
+.portrait-wrap::after { content: ""; position: absolute; inset: -14px; border-radius: 50%; background: radial-gradient(circle, rgba(244, 196, 82, .35), transparent 70%); z-index: -1; }
+.portrait {
+  position: relative;
+  width: 120px; height: 120px;
+  border-radius: 50%; overflow: hidden;
+  display: grid; place-items: center;
+  background: var(--red-deep);
+  border: 4px solid var(--night-2);
+}
+.portrait img { width: 100%; height: 100%; object-fit: cover; }
+.portrait .initials { font-size: 40px; }
+.honoree-text { min-width: 0; display: grid; gap: 6px; }
+.honoree-name { font-family: var(--f-display); font-size: clamp(32px, 4.4vw, 46px); line-height: 1.02; color: var(--ink); text-shadow: 0 0 24px rgba(244, 196, 82, .25); }
+.honoree-role { color: var(--muted); }
+.count-chip {
+  display: inline-flex; align-items: center; gap: 8px; width: fit-content;
+  font-family: var(--f-mono); font-size: 12px; font-variant-numeric: tabular-nums;
+  padding: 5px 12px; border-radius: 999px;
+  background: rgba(220, 47, 69, .18); color: #ffc2ca;
+  border: 1px solid rgba(220, 47, 69, .45);
+}
+.count-chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--red); box-shadow: 0 0 8px var(--red); }
+
+.kudos-form { display: grid; gap: 10px; position: relative; }
+.kudos-form label { font-weight: 700; }
+textarea, input[type="text"], input[type="date"], input[type="password"] {
+  width: 100%;
+  border: 1px solid var(--glass-line);
+  background: rgba(3, 8, 22, .45);
+  border-radius: 14px;
+  padding: 13px 15px;
+}
+textarea::placeholder, input::placeholder { color: rgba(185, 196, 220, .65); }
+textarea { min-height: 120px; resize: vertical; }
+textarea:focus, input:focus { border-color: rgba(244, 196, 82, .6); outline: none; box-shadow: 0 0 0 3px rgba(244, 196, 82, .18); }
+.form-row { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; justify-content: space-between; }
+.hint { color: var(--muted); font-size: 14px; }
+.chars { font-family: var(--f-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+.btn {
+  position: relative;
+  border: 0; border-radius: 999px; padding: 11px 22px;
+  font-weight: 800; letter-spacing: .01em; cursor: pointer;
+  background: linear-gradient(180deg, #ee4a5e, var(--red) 55%, var(--red-deep));
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(220, 47, 69, .35), inset 0 1px 0 rgba(255, 255, 255, .35);
+  transition: transform .15s, box-shadow .15s;
+}
+.btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(220, 47, 69, .45), inset 0 1px 0 rgba(255, 255, 255, .35); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn.gold { background: linear-gradient(180deg, #ffe08a, var(--gold) 55%, var(--gold-deep)); color: #3a2605; box-shadow: 0 6px 18px rgba(244, 196, 82, .3), inset 0 1px 0 rgba(255, 255, 255, .5); }
+.btn.quiet { background: var(--glass-strong); color: var(--ink); box-shadow: inset 0 0 0 1px var(--glass-line); font-weight: 700; }
+.btn.small { padding: 7px 14px; font-size: 13px; }
+.btn.danger { background: transparent; color: #ffb3bd; box-shadow: inset 0 0 0 1px rgba(220, 47, 69, .55); }
+.btn.danger.armed { background: var(--red); color: #fff; }
+
+.note { padding: 13px 15px; border-radius: 14px; background: rgba(3, 8, 22, .4); border: 1px solid var(--glass-line); color: var(--muted); font-size: 14px; }
+.countdown { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+.big-number {
+  font-family: var(--f-display); font-size: 84px; line-height: .9; font-variant-numeric: tabular-nums;
+  background: linear-gradient(180deg, #fff6d6, var(--gold) 50%, var(--gold-deep));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 18px rgba(244, 196, 82, .35));
+}
+.today h2 { font-family: var(--f-display); font-size: 28px; line-height: 1.1; }
+
+/* Sparkle burst on send */
+.burst-dot { position: fixed; width: 8px; height: 8px; border-radius: 50%; pointer-events: none; z-index: 60; animation: fly .9s ease-out forwards; }
+@keyframes fly { to { transform: translate(var(--dx), var(--dy)) scale(.2); opacity: 0; } }
+
+/* Doors as gift boxes */
+.doors { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 12px; }
+.door {
+  --box: var(--red); --box-lo: var(--red-deep); --ribbon: var(--gold);
+  position: relative;
+  display: grid; gap: 6px; justify-items: center; align-content: center;
+  min-height: 112px; padding: 12px 8px;
+  border-radius: 12px; border: 0;
+  text-align: center;
+  background:
+    linear-gradient(90deg, transparent calc(50% - 6px), var(--ribbon) calc(50% - 6px) calc(50% + 6px), transparent calc(50% + 6px)),
+    linear-gradient(0deg, transparent calc(50% - 6px), var(--ribbon) calc(50% - 6px) calc(50% + 6px), transparent calc(50% + 6px)),
+    linear-gradient(160deg, var(--box), var(--box-lo));
+  box-shadow: 0 8px 18px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .25);
+  color: var(--paper-ink);
+  overflow: visible;
+}
+.door::before {
+  content: ""; position: absolute; left: 50%; top: -7px; width: 30px; height: 15px; transform: translateX(-50%);
+  background:
+    radial-gradient(ellipse at 25% 60%, var(--ribbon) 0 45%, transparent 47%),
+    radial-gradient(ellipse at 75% 60%, var(--ribbon) 0 45%, transparent 47%);
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .3));
+}
+.door:nth-child(4n+2) { --box: var(--pine); --box-lo: var(--pine-deep); --ribbon: #f3e3c0; }
+.door:nth-child(4n+3) { --box: #2d4a8c; --box-lo: #16264f; --ribbon: var(--gold); }
+.door:nth-child(4n+4) { --box: #e9dcc3; --box-lo: #b9a37c; --ribbon: var(--red); }
+.door .tag {
+  position: relative; z-index: 1;
+  display: grid; gap: 1px; justify-items: center;
+  padding: 6px 10px 5px; border-radius: 8px;
+  background: var(--paper);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .25);
+  min-width: 56px;
+}
+.door .num { font-family: var(--f-display); font-size: 24px; line-height: 1; color: var(--paper-ink); font-variant-numeric: tabular-nums; }
+.door .when { font-family: var(--f-mono); font-size: 10.5px; color: #7a6650; }
+
+.door.today {
+  background: radial-gradient(circle at 50% 35%, rgba(244, 196, 82, .35), transparent 70%), linear-gradient(160deg, #2a1a08, #120a03);
+  box-shadow: 0 0 0 2px var(--gold), 0 0 28px rgba(244, 196, 82, .55);
+  animation: pulse 2.4s ease-in-out infinite;
+  color: var(--ink);
+}
+.door.today::before { display: none; }
+@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 2px var(--gold), 0 0 18px rgba(244, 196, 82, .4); } 50% { box-shadow: 0 0 0 2px var(--gold), 0 0 34px rgba(244, 196, 82, .75); } }
+.door.past {
+  background: linear-gradient(180deg, var(--paper), #efe4cc);
+  cursor: pointer;
+  transition: transform .2s;
+}
+.door.past::before { display: none; }
+.door.past:hover { transform: translateY(-3px) rotate(-1deg); }
+.door .mini { width: 44px; height: 44px; border-radius: 50%; overflow: hidden; display: grid; place-items: center; background: var(--ring-lo, var(--red-deep)); box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px var(--ring, var(--red)); }
+.door.today .mini { box-shadow: 0 0 0 2px #120a03, 0 0 0 4px var(--gold); }
+.door .mini img { width: 100%; height: 100%; object-fit: cover; }
+.door .mini .initials { font-size: 15px; }
+.door .who { font-size: 13px; font-weight: 800; line-height: 1.2; overflow-wrap: anywhere; }
+.door.past .who { color: var(--paper-ink); }
+.door .small-num { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; }
+.door.past .small-num { color: #7a6650; }
+.door.today .small-num { color: var(--gold); }
+.door .tally { font-family: var(--f-mono); font-size: 10.5px; color: #7a6650; font-variant-numeric: tabular-nums; }
+.door.placeholder { opacity: .5; }
+
+/* Admin */
+.admin summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: baseline; }
+.admin summary span { font-family: var(--f-display); font-size: 22px; }
+.admin summary::-webkit-details-marker { display: none; }
+.admin summary::after { content: "Open"; font-family: var(--f-mono); font-size: 12px; color: var(--gold); }
+.admin[open] summary::after, details[open] > summary::after { content: "Close"; }
+.admin-body { display: grid; gap: 26px; margin-top: 20px; }
+@media (min-width: 940px) { .admin-body { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); } }
+.admin h3 { font-family: var(--f-display); font-size: 18px; margin-bottom: 4px; }
+.stack { display: grid; gap: 12px; align-content: start; }
+.field { display: grid; gap: 6px; }
+.field > span { font-size: 13px; font-weight: 700; color: var(--muted); }
+.check { display: flex; gap: 8px; align-items: center; }
+.file-pick input { max-width: 100%; font-size: 13px; }
+.roster { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.roster li {
+  display: grid; grid-template-columns: 64px 40px minmax(0, 1fr) auto; gap: 12px; align-items: center;
+  padding: 9px 12px; border-radius: 14px; background: rgba(3, 8, 22, .4); border: 1px solid var(--glass-line);
+}
+.roster .d { font-family: var(--f-mono); font-size: 11px; color: var(--gold); }
+.roster .mini { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; display: grid; place-items: center; background: var(--ring-lo, var(--red-deep)); box-shadow: 0 0 0 2px var(--ring, var(--red)); }
+.roster .mini img { width: 100%; height: 100%; object-fit: cover; }
+.roster .mini .initials { font-size: 13px; }
+.roster .nm { min-width: 0; overflow-wrap: anywhere; font-weight: 700; }
+.roster .nm small { display: block; font-weight: 400; color: var(--muted); }
+.roster .acts { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.icon-btn { border: 1px solid var(--glass-line); background: var(--glass-strong); border-radius: 9px; padding: 5px 9px; cursor: pointer; font-size: 13px; }
+.icon-btn:disabled { opacity: .3; cursor: default; }
+.photo-label { position: relative; overflow: hidden; }
+.photo-label input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+@media (max-width: 520px) {
+  .roster li { grid-template-columns: 40px minmax(0, 1fr); }
+  .roster .d { grid-column: 1 / -1; order: -1; }
+  .roster .acts { grid-column: 1 / -1; justify-content: flex-start; }
+}
+
+/* Kudos dialog: a Christmas letter with gift tags */
+dialog {
+  width: min(600px, calc(100vw - 32px));
+  max-height: calc(100vh - 48px);
+  border: 0; border-radius: 22px; padding: 0;
+  background: var(--paper);
+  color: var(--paper-ink);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, .55), 0 0 0 6px var(--red), 0 0 0 8px var(--gold);
+  overflow: hidden;
+}
+dialog::backdrop { background: rgba(3, 7, 20, .7); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.dlg-head {
+  display: flex; gap: 18px; align-items: center; padding: 24px 24px 18px;
+  background:
+    repeating-linear-gradient(135deg, rgba(220, 47, 69, .07) 0 12px, transparent 12px 24px),
+    var(--paper);
+  border-bottom: 2px dashed rgba(42, 29, 20, .18);
+}
+.dlg-head .portrait { width: 84px; height: 84px; border: 0; box-shadow: 0 0 0 3px var(--paper), 0 0 0 6px var(--ring, var(--red)); background: var(--ring-lo, var(--red-deep)); flex: none; }
+.dlg-head .portrait .initials { font-size: 28px; }
+.dlg-head h2 { font-family: var(--f-display); font-size: 32px; line-height: 1.05; color: var(--paper-ink); }
+.dlg-head .eyebrow { color: var(--red-deep); }
+.dlg-close { margin-left: auto; align-self: flex-start; }
+dialog .btn.quiet { background: rgba(42, 29, 20, .08); color: var(--paper-ink); box-shadow: none; }
+.dlg-body { padding: 20px 24px 28px; display: grid; gap: 14px; overflow: auto; max-height: 62vh; }
+.dlg-body .eyebrow { color: var(--red-deep); }
+.dlg-body .note { background: rgba(42, 29, 20, .06); border-color: rgba(42, 29, 20, .12); color: #6b5843; }
+.kudo {
+  position: relative;
+  display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px;
+  padding: 14px 16px 14px 18px; border-radius: 6px 16px 16px 6px;
+  background: #fff;
+  box-shadow: 0 3px 10px rgba(42, 29, 20, .12);
+  border-left: 5px solid var(--tag, var(--red));
+}
+.kudo:nth-child(odd) { transform: rotate(-.5deg); }
+.kudo:nth-child(even) { transform: rotate(.5deg); }
+.kudo img, .kudo .anon { width: 34px; height: 34px; border-radius: 50%; }
+.kudo .anon { background: var(--tag, var(--red)); }
+.kudo .by { font-size: 13px; font-weight: 800; }
+.kudo .by time { font-family: var(--f-mono); font-weight: 400; color: #8a7660; font-size: 11px; margin-left: 6px; }
+.kudo .txt { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 15.5px; }
+
+.toast {
+  position: fixed; left: 50%; bottom: calc(22px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  background: var(--paper); color: var(--paper-ink);
+  padding: 11px 18px; border-radius: 999px; font-weight: 800; font-size: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .45), 0 0 0 2px var(--gold);
+  max-width: calc(100vw - 32px);
+  z-index: 70;
+}
+
+.foot { display: flex; justify-content: center; gap: 16px; color: var(--muted); font-size: 13px; }
+.linkish { background: none; border: 0; padding: 4px 6px; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-size: 13px; }
+.linkish:hover { color: var(--gold); }
+.signed { font-size: 13px; color: var(--muted); }
+.signed button { margin-left: 4px; }
+.loading-dim { opacity: .6; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bauble.fresh, .bauble:hover, .bauble:focus-visible, .rays, .halo, .fairy, .bulb,
+  .portrait-wrap::before, .door.today, .burst-dot { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="sky" aria-hidden="true"></canvas>
+
+<div class="wrap">
+  <svg class="garland" id="garland" viewBox="0 0 1200 70" preserveAspectRatio="none" aria-hidden="true"></svg>
+
+  <header class="masthead">
+    <p class="eyebrow season" id="seasonLine">The team advent calendar</p>
+    <h1 class="wordmark">Advent <span class="of">of</span> Kudos</h1>
+    <p class="status">One window opens each day with someone from the team. Leave them your kudos before the day is over: at midnight their photo turns into a bauble and is hung on the tree.</p>
+  </header>
+
+  <main class="main">
+    <section class="panel tree-panel" aria-labelledby="treeTitle">
+      <div class="panel-head">
+        <h2 id="treeTitle">The tree</h2>
+        <span class="eyebrow" id="treeCount">0 baubles hung</span>
+      </div>
+      <div class="stage" id="stage">
+        <svg viewBox="0 0 100 125" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="gTier" x1="0" x2="1" y1="0" y2="0">
+              <stop offset="0" stop-color="#0a3420"></stop>
+              <stop offset=".45" stop-color="#25864f"></stop>
+              <stop offset=".55" stop-color="#1f7a47"></stop>
+              <stop offset="1" stop-color="#0a3420"></stop>
+            </linearGradient>
+            <linearGradient id="gTierDark" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="#000" stop-opacity="0"></stop>
+              <stop offset="1" stop-color="#000" stop-opacity=".35"></stop>
+            </linearGradient>
+            <radialGradient id="gHalo">
+              <stop offset="0" stop-color="#fff3c4" stop-opacity=".95"></stop>
+              <stop offset=".35" stop-color="#f4c452" stop-opacity=".45"></stop>
+              <stop offset="1" stop-color="#f4c452" stop-opacity="0"></stop>
+            </radialGradient>
+            <linearGradient id="gStar" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="#fff7d1"></stop>
+              <stop offset=".5" stop-color="#f4c452"></stop>
+              <stop offset="1" stop-color="#b9811f"></stop>
+            </linearGradient>
+            <radialGradient id="gGlow" cx=".5" cy=".55" r=".5">
+              <stop offset="0" stop-color="#f4c452" stop-opacity=".22"></stop>
+              <stop offset="1" stop-color="#f4c452" stop-opacity="0"></stop>
+            </radialGradient>
+            <linearGradient id="gSnow" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="#ffffff"></stop>
+              <stop offset="1" stop-color="#bcd9ee"></stop>
+            </linearGradient>
+          </defs>
+
+          <ellipse cx="50" cy="66" rx="50" ry="58" fill="url(#gGlow)"></ellipse>
+          <!-- Snowy ground -->
+          <path d="M-6 117 Q20 110 50 113 Q80 110 106 117 L106 125 L-6 125 Z" fill="url(#gSnow)" opacity=".95"></path>
+          <rect x="45" y="104" width="10" height="13" rx="1" fill="#5b3a22"></rect>
+          <rect x="45" y="104" width="10" height="13" rx="1" fill="url(#gTierDark)"></rect>
+
+          <!-- Tiers, bottom to top -->
+          <path d="M50 46 L4 106 Q27 112 50 108 Q73 112 96 106 Z" fill="url(#gTier)"></path>
+          <path d="M50 46 L4 106 Q27 112 50 108 Q73 112 96 106 Z" fill="url(#gTierDark)"></path>
+          <path d="M4 106 Q27 112 50 108 Q73 112 96 106" fill="none" stroke="url(#gSnow)" stroke-width="2.4" stroke-linecap="round"></path>
+
+          <path d="M50 24 L12 77 Q31 83 50 79 Q69 83 88 77 Z" fill="url(#gTier)"></path>
+          <path d="M50 24 L12 77 Q31 83 50 79 Q69 83 88 77 Z" fill="url(#gTierDark)"></path>
+          <path d="M12 77 Q31 83 50 79 Q69 83 88 77" fill="none" stroke="url(#gSnow)" stroke-width="2.2" stroke-linecap="round"></path>
+
+          <path d="M50 8 L22 48 Q36 53 50 50 Q64 53 78 48 Z" fill="url(#gTier)"></path>
+          <path d="M50 8 L22 48 Q36 53 50 50 Q64 53 78 48 Z" fill="url(#gTierDark)"></path>
+          <path d="M22 48 Q36 53 50 50 Q64 53 78 48" fill="none" stroke="url(#gSnow)" stroke-width="2" stroke-linecap="round"></path>
+
+          <!-- Tinsel -->
+          <g fill="none" stroke="#f4c452" stroke-width=".9" stroke-linecap="round" stroke-dasharray=".2 1.6" opacity=".9">
+            <path id="t1" d="M31 33 Q50 42 67 30"></path>
+            <path id="t2" d="M22 60 Q50 74 79 56"></path>
+            <path id="t3" d="M12 90 Q50 106 89 86"></path>
+          </g>
+          <g id="fairies"></g>
+
+          <!-- Presents -->
+          <g>
+            <rect x="14" y="108" width="17" height="12" rx="1" fill="#dc2f45"></rect>
+            <rect x="21" y="108" width="3" height="12" fill="#f4c452"></rect>
+            <rect x="14" y="112.5" width="17" height="2.4" fill="#f4c452"></rect>
+            <path d="M22.5 108 q-4 -4 -6 -1 q2 2 6 1 q4 -4 6 -1 q-2 2 -6 1z" fill="#f4c452"></path>
+            <rect x="66" y="110" width="13" height="10" rx="1" fill="#2d4a8c"></rect>
+            <rect x="71.2" y="110" width="2.6" height="10" fill="#f3e3c0"></rect>
+            <path d="M72.5 110 q-3 -3.4 -5 -.8 q1.6 1.6 5 .8 q3 -3.4 5 -.8 q-1.6 1.6 -5 .8z" fill="#f3e3c0"></path>
+            <rect x="79" y="113" width="10" height="7" rx="1" fill="#e9dcc3"></rect>
+            <rect x="83" y="113" width="2" height="7" fill="#dc2f45"></rect>
+            <rect x="33" y="113" width="9" height="7" rx="1" fill="#217a4d"></rect>
+            <rect x="36.6" y="113" width="1.8" height="7" fill="#f4c452"></rect>
+          </g>
+
+          <!-- Star -->
+          <g class="rays" id="rays" opacity=".55">
+            <g stroke="#f4c452" stroke-width=".35" stroke-linecap="round">
+              <line x1="50" y1="-6" x2="50" y2="-1"></line><line x1="50" y1="17" x2="50" y2="22"></line>
+              <line x1="36" y1="8" x2="41" y2="8"></line><line x1="59" y1="8" x2="64" y2="8"></line>
+              <line x1="40" y1="-2" x2="43.5" y2="1.5"></line><line x1="56.5" y1="14.5" x2="60" y2="18"></line>
+              <line x1="60" y1="-2" x2="56.5" y2="1.5"></line><line x1="43.5" y1="14.5" x2="40" y2="18"></line>
+            </g>
+          </g>
+          <circle class="halo" cx="50" cy="8" r="11" fill="url(#gHalo)"></circle>
+          <polygon id="star" points="50,1 52.1,5.6 57.2,6 53.3,9.3 54.5,14.3 50,11.6 45.5,14.3 46.7,9.3 42.8,6 47.9,5.6" fill="url(#gStar)" stroke="#fff3c4" stroke-width=".3"></polygon>
+        </svg>
+        <div id="ornaments"></div>
+      </div>
+      <p class="tree-caption" id="treeCaption">Tap a bauble to read that person's kudos.</p>
+    </section>
+
+    <div class="side">
+      <section class="panel today" id="today" aria-live="polite">
+        <p class="eyebrow">Today</p>
+        <p class="hint">Loading the calendar…</p>
+      </section>
+
+      <section class="panel" aria-labelledby="calTitle">
+        <div class="panel-head">
+          <h2 id="calTitle">The windows</h2>
+          <span class="eyebrow" id="calRange"></span>
+        </div>
+        <div class="doors" id="doors"></div>
+      </section>
+    </div>
+  </main>
+
+  <section class="panel admin" id="adminPanel" hidden>
+    <form class="stack" id="loginForm" hidden>
+      <h3>Organizer sign-in</h3>
+      <label class="field"><span>Organizer password</span><input type="password" id="loginPass" autocomplete="current-password" required></label>
+      <div class="form-row"><span class="hint">Only the person setting up the calendar needs this.</span><span class="form-row" style="gap:8px"><button class="btn quiet small" type="button" id="loginCancel">Cancel</button><button class="btn gold" type="submit">Sign in</button></span></div>
+    </form>
+    <details id="adminDetails" hidden open>
+      <summary><span>Set up the calendar</span></summary>
+      <div class="admin-body">
+        <div class="stack">
+          <h3>The team, in order of appearance</h3>
+          <form class="stack" id="addForm" autocomplete="off">
+            <div class="field">
+              <span>Name</span>
+              <input type="text" id="addName" maxlength="60" placeholder="e.g. Marta López" required>
+            </div>
+            <div class="field">
+              <span>Role or team (optional)</span>
+              <input type="text" id="addRole" maxlength="60" placeholder="e.g. Product design">
+            </div>
+            <div class="field">
+              <span>Photo (cropped to a circle)</span>
+              <span class="file-pick"><input type="file" id="addPhoto" accept="image/*"></span>
+            </div>
+            <div class="form-row">
+              <span class="hint">Added to the end of the calendar.</span>
+              <button class="btn gold" type="submit" id="addBtn">Add to the calendar</button>
+            </div>
+          </form>
+          <ul class="roster" id="roster"></ul>
+        </div>
+
+        <div class="stack">
+          <h3>Dates</h3>
+          <form class="stack" id="cfgForm">
+            <label class="field"><span>First day</span><input type="date" id="cfgStart"></label>
+            <label class="check"><input type="checkbox" id="cfgWeekdays"> Skip Saturdays and Sundays</label>
+            <label class="field"><span>Time zone (when each day starts and ends)</span><input type="text" id="cfgTz" placeholder="Europe/Madrid" list="tzList" autocomplete="off"></label>
+            <datalist id="tzList"><option value="Europe/Madrid"></option><option value="Europe/London"></option><option value="Europe/Lisbon"></option><option value="Europe/Berlin"></option><option value="America/New_York"></option><option value="America/Chicago"></option><option value="America/Los_Angeles"></option><option value="America/Mexico_City"></option><option value="America/Bogota"></option><option value="America/Argentina/Buenos_Aires"></option><option value="Asia/Tokyo"></option><option value="UTC"></option></datalist>
+            <div class="form-row"><span class="hint">Each person gets one day, starting on this date.</span><button class="btn quiet" type="submit">Save dates</button></div>
+          </form>
+
+          <h3>Try another date</h3>
+          <div class="stack">
+            <label class="field"><span>View the page as if today were…</span><input type="date" id="previewDate"></label>
+            <div class="form-row">
+              <span class="hint">Only changes what you see, in this browser. Kudos can only be sent on the real day.</span>
+              <button class="btn quiet small" type="button" id="previewClear">Back to today</button>
+            </div>
+          </div>
+          <div class="form-row"><span class="hint">You're signed in as the organizer on this browser.</span><button class="btn quiet small" type="button" id="logoutBtn">Sign out</button></div>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <footer class="foot"><span>Advent of Kudos</span><button class="linkish" type="button" id="organizerBtn">Organizer</button></footer>
+</div>
+
+<dialog id="dlg" aria-labelledby="dlgName">
+  <div class="dlg-head">
+    <div class="portrait" id="dlgPortrait"></div>
+    <div>
+      <p class="eyebrow" id="dlgWhen"></p>
+      <h2 id="dlgName"></h2>
+    </div>
+    <button class="btn quiet small dlg-close" type="button" id="dlgClose">Close</button>
+  </div>
+  <div class="dlg-body" id="dlgBody"></div>
+</dialog>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(() => {
+  const MAX_LEN = 500;
+  const POLL_MS = 30000;
+  const RINGS = [
+    { ring: "#dc2f45", hi: "#ff8a98", lo: "#861325" },
+    { ring: "#e0a83a", hi: "#fff0b8", lo: "#8a5d12" },
+    { ring: "#3f7fd0", hi: "#a8d9f2", lo: "#16306b" },
+    { ring: "#23935a", hi: "#8fe3b2", lo: "#0d3b26" },
+    { ring: "#b04fc4", hi: "#efb7ff", lo: "#4e1460" },
+    { ring: "#cfd8e6", hi: "#ffffff", lo: "#6c7a92" },
+  ];
+  const LIGHTS = ["#ff5b6e", "#ffd25e", "#7fd3ff", "#8ff0b0", "#ffffff", "#ff9b4a"];
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // ---------- small helpers ----------
+  const $ = (id) => document.getElementById(id);
+  const SVGNS = "http://www.w3.org/2000/svg";
+  function h(tag, attrs, ...kids) {
+    const el = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs || {})) {
+      if (v == null || v === false) continue;
+      if (k === "class") el.className = v;
+      else if (k === "text") el.textContent = v;
+      else if (k === "style") el.style.cssText = v;
+      else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+      else el.setAttribute(k, v === true ? "" : v);
+    }
+    for (const kid of kids.flat()) if (kid != null) el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+    return el;
+  }
+  function s(tag, attrs) {
+    const el = document.createElementNS(SVGNS, tag);
+    for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+    return el;
+  }
+  const memory = {};
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch { return memory[k] ?? null; } },
+    set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch { if (v == null) delete memory[k]; else memory[k] = v; } },
+  };
+  let toastTimer;
+  function toast(msg) {
+    const t = $("toast"); t.textContent = msg; t.hidden = false;
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, 3200);
+  }
+  const ringVars = (r) => `--ring:${r.ring};--ring-hi:${r.hi};--ring-lo:${r.lo}`;
+
+  // Each browser signs its kudos with a private random token, so people can edit their own message.
+  function authorToken() {
+    let t = store.get("aok-token");
+    if (!t) {
+      const bytes = new Uint8Array(24);
+      crypto.getRandomValues(bytes);
+      t = [...bytes].map((b) => b.toString(16).padStart(2, "0")).join("");
+      store.set("aok-token", t);
+    }
+    return t;
+  }
+
+  const S = {
+    loaded: false, error: null,
+    today: null, config: null, members: [], counts: {}, revealed: {}, mine: {}, identity: {}, adminEnabled: false,
+    adminKey: store.get("aok-admin"), canEdit: false, showLogin: false,
+    preview: null, openId: null, sending: false,
+  };
+
+  // ---------- API ----------
+  async function api(path, { method = "GET", body, admin = false } = {}) {
+    const headers = { "x-author-token": authorToken() };
+    if (body !== undefined) headers["content-type"] = "application/json";
+    if ((admin || method === "GET") && S.adminKey) headers["x-admin-key"] = S.adminKey;
+    const res = await fetch("/api/" + path, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) });
+    let data = null;
+    try { data = await res.json(); } catch {}
+    if (!res.ok) {
+      const err = new Error((data && data.error) || `Request failed (${res.status})`);
+      err.status = res.status;
+      throw err;
+    }
+    return data;
+  }
+
+  let refreshing = null;
+  async function refresh() {
+    if (refreshing) return refreshing;
+    refreshing = (async () => {
+      try {
+        const d = await api("state");
+        Object.assign(S, {
+          today: d.today, config: d.config, members: d.members || [], counts: d.counts || {},
+          revealed: d.revealed || {}, mine: d.mine || {}, identity: d.identity || {}, adminEnabled: !!d.adminEnabled,
+          loaded: true, error: null,
+        });
+      } catch (e) {
+        S.error = e.message;
+        S.loaded = true;
+      } finally {
+        refreshing = null;
+      }
+      render();
+    })();
+    return refreshing;
+  }
+
+  // ---------- scenery: snow, stars, garland, fairy lights ----------
+  (function sky() {
+    const c = $("sky"), ctx = c.getContext("2d");
+    let W = 0, H = 0, flakes = [], stars = [], dpr = 1;
+    function size() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = innerWidth; H = innerHeight;
+      c.width = W * dpr; c.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const n = Math.min(180, Math.round(W * H / 9000));
+      flakes = Array.from({ length: n }, () => ({
+        x: Math.random() * W, y: Math.random() * H,
+        r: Math.random() * 2.2 + .6, v: Math.random() * .6 + .25,
+        drift: Math.random() * Math.PI * 2, a: Math.random() * .5 + .4,
+      }));
+      stars = Array.from({ length: Math.round(W / 9) }, () => ({
+        x: Math.random() * W, y: Math.random() * H * .55,
+        r: Math.random() * 1.1 + .2, p: Math.random() * Math.PI * 2,
+      }));
+    }
+    function draw(t) {
+      ctx.clearRect(0, 0, W, H);
+      for (const st of stars) {
+        const a = .35 + .45 * Math.sin(t / 900 + st.p);
+        ctx.globalAlpha = Math.max(.08, a);
+        ctx.fillStyle = "#fff6d6";
+        ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, 7); ctx.fill();
+      }
+      ctx.fillStyle = "#ffffff";
+      for (const f of flakes) {
+        if (!reduced) {
+          f.y += f.v; f.drift += .01; f.x += Math.sin(f.drift) * .35;
+          if (f.y > H + 4) { f.y = -4; f.x = Math.random() * W; }
+          if (f.x > W + 4) f.x = -4; else if (f.x < -4) f.x = W + 4;
+        }
+        ctx.globalAlpha = f.a;
+        ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, 7); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      if (!reduced && !document.hidden) requestAnimationFrame(draw);
+    }
+    size();
+    addEventListener("resize", size);
+    document.addEventListener("visibilitychange", () => { if (!document.hidden && !reduced) requestAnimationFrame(draw); });
+    requestAnimationFrame(draw);
+  })();
+
+  (function garland() {
+    const g = $("garland");
+    const d = "M0 6 Q150 64 300 14 Q450 64 600 14 Q750 64 900 14 Q1050 64 1200 6";
+    const leaf = s("path", { d, class: "leaf" });
+    const wire = s("path", { d, class: "wire" });
+    g.append(leaf, wire);
+    const L = wire.getTotalLength();
+    const n = 34;
+    for (let i = 1; i < n; i++) {
+      const p = wire.getPointAtLength((L * i) / n);
+      const col = LIGHTS[i % LIGHTS.length];
+      const grp = s("g", { class: "bulb", style: `animation-delay:${(i * 0.37) % 2.4}s` });
+      grp.append(
+        s("circle", { cx: p.x, cy: p.y + 9, r: 14, fill: col, opacity: .18 }),
+        s("rect", { x: p.x - 2.5, y: p.y, width: 5, height: 4, rx: 1, fill: "#3b3b3b" }),
+        s("ellipse", { cx: p.x, cy: p.y + 9, rx: 4, ry: 6, fill: col }),
+      );
+      g.append(grp);
+    }
+  })();
+
+  (function fairies() {
+    const g = $("fairies");
+    ["t1", "t2", "t3"].forEach((id, k) => {
+      const path = $(id), L = path.getTotalLength();
+      const n = [6, 9, 12][k];
+      for (let i = 0; i <= n; i++) {
+        const p = path.getPointAtLength((L * i) / n);
+        const col = LIGHTS[(i + k) % LIGHTS.length];
+        const grp = s("g", { class: "fairy", style: `animation-delay:${((i * 0.53) + k * 0.3) % 2.2}s` });
+        grp.append(s("circle", { cx: p.x, cy: p.y, r: 1.9, fill: col, opacity: .25 }), s("circle", { cx: p.x, cy: p.y, r: .75, fill: col }));
+        g.append(grp);
+      }
+    });
+  })();
+
+  function burst(fromEl) {
+    if (reduced || !fromEl) return;
+    const r = fromEl.getBoundingClientRect();
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    for (let i = 0; i < 28; i++) {
+      const a = (Math.PI * 2 * i) / 28 + Math.random() * .3;
+      const dist = 60 + Math.random() * 90;
+      const dot = h("span", { class: "burst-dot", style:
+        `left:${cx}px;top:${cy}px;background:${LIGHTS[i % LIGHTS.length]};box-shadow:0 0 8px ${LIGHTS[i % LIGHTS.length]};--dx:${Math.cos(a) * dist}px;--dy:${Math.sin(a) * dist}px` });
+      document.body.append(dot);
+      setTimeout(() => dot.remove(), 1000);
+    }
+  }
+
+  // ---------- dates ----------
+  const parse = (str) => { const [y, m, d] = str.split("-").map(Number); return new Date(y, m - 1, d); };
+  const realToday = () => S.today;
+  const today = () => S.preview || S.today;
+  const fmtShort = new Intl.DateTimeFormat("en-US", { weekday: "short", month: "short", day: "numeric" });
+  const fmtLong = new Intl.DateTimeFormat("en-US", { weekday: "long", month: "long", day: "numeric" });
+  const fmtTime = new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit" });
+  const short = (str) => fmtShort.format(parse(str));
+  const long = (str) => fmtLong.format(parse(str));
+  const daysBetween = (a, b) => Math.round((parse(b) - parse(a)) / 86400000);
+  const firstName = (name) => String(name).trim().split(/\s+/)[0];
+  const pad = (n) => String(n).padStart(2, "0");
+  const iso = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+
+  function placeholderDates(n) {
+    const cfg = S.config || { start: `${new Date().getFullYear()}-12-01`, weekdaysOnly: false };
+    const out = [];
+    const d = parse(cfg.start);
+    while (out.length < n) {
+      if (cfg.weekdaysOnly) while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1);
+      out.push(iso(d));
+      d.setDate(d.getDate() + 1);
+    }
+    return out;
+  }
+
+  // The server assigns each person a day; here we only work out past / today / future for display.
+  function schedule() {
+    const t = today();
+    return S.members.map((m, i) => ({
+      ...m, ring: RINGS[i % RINGS.length],
+      state: !t ? "future" : m.date < t ? "past" : m.date === t ? "today" : "future",
+    }));
+  }
+  const countFor = (id) => S.counts[id] || 0;
+
+  function initialsOf(name) {
+    return String(name || "?").trim().split(/\s+/).slice(0, 2).map((w) => w[0] || "").join("").toUpperCase() || "?";
+  }
+  function face(m) {
+    return m.photo ? h("img", { src: m.photo, alt: "" }) : h("span", { class: "initials", text: initialsOf(m.name) });
+  }
+
+  // ---------- tree layout ----------
+  function spots(n) {
+    const sizes = []; let total = 0;
+    for (let r = 1; total < n; r++) { sizes.push(r); total += r; }
+    const R = sizes.length;
+    const yTop = 22, yBot = 80;
+    const pts = [];
+    sizes.forEach((size, i) => {
+      const y = R === 1 ? 40 : yTop + (yBot - yTop) * (i / (R - 1));
+      const hw = ((y - 5) / 81) * 44 * 0.78;
+      for (let j = 0; j < size; j++) {
+        const x = size === 1 ? 50 : 50 - hw + (2 * hw) * (j + 0.5) / size;
+        pts.push({ x, y: y + (j % 2 ? 2.4 : -1.2) });
+      }
+    });
+    // Stable shuffle so the tree fills unevenly, like a real one.
+    let seed = 7;
+    const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    for (let i = pts.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [pts[i], pts[j]] = [pts[j], pts[i]]; }
+    const size = Math.min(13, 62 / Math.max(R, 3));
+    return { pts, size };
+  }
+
+  // ---------- rendering ----------
+  function render() {
+    const sched = schedule();
+    renderHeader(sched);
+    renderTree(sched);
+    renderToday(sched);
+    renderDoors(sched);
+    renderAdmin(sched);
+    if (S.openId && $("dlg").open) renderDialog(S.openId);
+  }
+
+  function renderHeader(sched) {
+    const n = sched.length;
+    if (n) {
+      const first = sched[0].date, last = sched[n - 1].date;
+      $("calRange").textContent = `${short(first)} – ${short(last)}`;
+      $("seasonLine").textContent = `${n} ${n === 1 ? "window" : "windows"} · from ${long(first)}`;
+    } else {
+      $("calRange").textContent = S.config ? `from ${short(S.config.start)}` : "";
+      $("seasonLine").textContent = "The team advent calendar";
+    }
+  }
+
+  const seen = new Set((store.get("aok-seen") || "").split(",").filter(Boolean));
+  function renderTree(sched) {
+    const box = $("ornaments");
+    box.replaceChildren();
+    const hung = sched.filter((m) => m.state === "past");
+    const { pts, size } = spots(Math.max(sched.length, 6));
+    let delay = 0;
+    sched.forEach((m, i) => {
+      const p = pts[i];
+      if (m.state !== "past") {
+        box.append(h("span", { class: "ghost", style: `left:${p.x}%;top:${p.y}%;width:${size * 0.55}%;aspect-ratio:1` }));
+        return;
+      }
+      const fresh = !seen.has(m.id);
+      box.append(h("button", {
+        class: "bauble" + (fresh ? " fresh" : ""), type: "button",
+        style: `left:${p.x}%;top:${p.y}%;width:${size}%;${ringVars(m.ring)};--delay:${fresh ? (delay++ * 0.14) : 0}s`,
+        "aria-label": `Read ${m.name}'s kudos`, title: m.name,
+        onclick: () => openDialog(m.id),
+      }, h("span", { class: "thread" }), h("span", { class: "cap" }), h("span", { class: "ball" }, h("span", { class: "face" }, face(m))), h("span", { class: "sparkle" })));
+      if (!S.preview) seen.add(m.id);
+    });
+    store.set("aok-seen", [...seen].join(","));
+    const all = sched.length > 0 && hung.length === sched.length;
+    $("rays").classList.toggle("burst", all);
+    $("rays").setAttribute("opacity", all ? "1" : ".55");
+    $("treeCount").textContent = `${hung.length} of ${sched.length} ${sched.length === 1 ? "bauble" : "baubles"}`;
+    $("treeCaption").textContent = !sched.length
+      ? "Baubles appear here as each day ends."
+      : hung.length
+        ? (all ? "The tree is complete. Tap any bauble to read its kudos." : "Tap a bauble to read that person's kudos.")
+        : "The first bauble is hung when the first day ends.";
+  }
+
+  function renderToday(sched) {
+    const box = $("today");
+    // Keep the form intact while someone types in it.
+    const current = sched.find((m) => m.state === "today");
+    const active = document.activeElement;
+    if (current && box.dataset.member === current.id && active && box.contains(active) && (active.tagName === "TEXTAREA" || active.tagName === "INPUT")) {
+      updateTodayMeta(current);
+      return;
+    }
+    box.replaceChildren();
+    box.dataset.member = current ? current.id : "";
+
+    if (!S.loaded) { box.append(h("p", { class: "eyebrow", text: "Today" }), h("p", { class: "hint", text: "Loading the calendar…" })); return; }
+    if (S.error && !S.today) {
+      box.append(
+        h("p", { class: "eyebrow", text: "Today" }),
+        h("h2", { text: "The calendar couldn't load" }),
+        h("p", { class: "hint", text: S.error }),
+        h("button", { class: "btn quiet small", type: "button", text: "Try again", onclick: () => refresh() }));
+      return;
+    }
+    box.append(h("p", { class: "eyebrow", text: S.preview ? `Preview · ${long(today())}` : `Today · ${long(today())}` }));
+
+    if (!sched.length) {
+      box.append(
+        h("h2", { text: "Nobody is on the calendar yet" }),
+        h("p", { class: "hint", text: S.canEdit
+          ? "Add your teammates under “Set up the calendar” below. Each one gets a day."
+          : "The organizer is still putting the team list together. Check back soon." }),
+      );
+      return;
+    }
+
+    if (current) { renderHonoree(box, current); return; }
+
+    const next = sched.find((m) => m.state === "future");
+    if (next && sched[0].state === "future") {
+      const left = daysBetween(today(), next.date);
+      box.append(
+        h("div", { class: "countdown" },
+          h("div", { class: "big-number", text: String(left) }),
+          h("div", { class: "honoree-text" },
+            h("h2", { text: left === 1 ? "sleep until the first window" : "sleeps until the first window" }),
+            h("p", { class: "hint", text: `It all starts on ${long(next.date)}. Who comes out each day is a surprise.` }))),
+      );
+      return;
+    }
+    if (next) {
+      box.append(
+        h("h2", { text: "No window opens today" }),
+        h("p", { class: "hint", text: `The next one opens on ${long(next.date)}. In the meantime, have a look around the tree.` }),
+      );
+      return;
+    }
+    box.append(
+      h("h2", { text: "The tree is complete" }),
+      h("p", { class: "hint", text: `All ${sched.length} teammates have their bauble. Tap any of them to read their kudos again. Merry Christmas!` }),
+    );
+  }
+
+  function savedName() {
+    return store.get("aok-name") || (S.identity.email ? S.identity.email.split("@")[0].replace(/[._-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "");
+  }
+
+  function renderHonoree(box, m) {
+    box.append(
+      h("div", { class: "honoree" },
+        h("div", { class: "portrait-wrap" }, h("div", { class: "portrait" }, face(m))),
+        h("div", { class: "honoree-text" },
+          h("span", { class: "eyebrow", text: `Window ${m.day} · today is the day of` }),
+          h("h2", { class: "honoree-name", text: m.name }),
+          m.role ? h("span", { class: "honoree-role", text: m.role }) : null,
+          h("span", { class: "count-chip", id: "kudoCount" }))),
+    );
+
+    const mine = S.mine[m.id] || null;
+    const isRealDay = !S.preview || S.preview === realToday();
+
+    if (!isRealDay) {
+      box.append(h("p", { class: "note", text: "You're previewing another date. Kudos can only be sent on the real day." }));
+    } else {
+      const nameInput = h("input", { type: "text", id: "kudoName", maxlength: "60", autocomplete: "name", placeholder: "Your name", required: true });
+      nameInput.value = (mine && mine.name) || savedName();
+      const ta = h("textarea", { id: "kudoText", maxlength: String(MAX_LEN), placeholder: `What would you like to thank ${firstName(m.name)} for? Something specific they did, how they helped you, what they bring to the team…` });
+      ta.value = mine ? mine.text : "";
+      const chars = h("span", { class: "chars", id: "kudoChars" });
+      const btn = h("button", { class: "btn", type: "submit", id: "kudoBtn" });
+      const del = mine ? h("button", { class: "btn quiet small", type: "button", id: "kudoDel", text: "Take back my kudos", onclick: () => removeKudo(m) }) : null;
+      const sync = () => {
+        chars.textContent = `${ta.value.length}/${MAX_LEN}`;
+        const v = ta.value.trim(), n = nameInput.value.trim();
+        btn.disabled = S.sending || !v || !n || (mine && v === mine.text.trim() && n === mine.name);
+      };
+      btn.textContent = mine ? "Update my kudos" : "Send kudos";
+      ta.addEventListener("input", sync);
+      nameInput.addEventListener("input", sync);
+      const form = h("form", { class: "kudos-form", onsubmit: (e) => { e.preventDefault(); sendKudo(m, nameInput.value, ta.value, btn); } },
+        h("label", { for: "kudoName", text: "From" }),
+        nameInput,
+        h("label", { for: "kudoText", text: mine ? "Your kudos (you can edit them until midnight)" : "Your kudos" }),
+        ta,
+        h("div", { class: "form-row" }, chars, h("span", { class: "form-row", style: "gap:8px" }, del, btn)));
+      box.append(form);
+      sync();
+    }
+    box.append(h("p", { class: "hint", text: "Messages are revealed at midnight, when their photo turns into a bauble on the tree." }));
+    updateTodayMeta(m);
+  }
+
+  function updateTodayMeta(m) {
+    const chip = $("kudoCount");
+    if (!chip) return;
+    const n = countFor(m.id);
+    chip.textContent = n ? `${n} ${n === 1 ? "kudo" : "kudos"} wrapped and waiting` : "No kudos yet: be the first";
+  }
+
+  function renderDoors(sched) {
+    const box = $("doors");
+    box.replaceChildren();
+    if (!sched.length) {
+      if (!S.config) return;
+      placeholderDates(24).forEach((d, i) => box.append(
+        h("div", { class: "door placeholder" },
+          h("span", { class: "tag" }, h("span", { class: "num", text: String(i + 1) }), h("span", { class: "when", text: short(d) })))));
+      return;
+    }
+    sched.forEach((m) => {
+      if (m.state === "past") {
+        const n = countFor(m.id);
+        box.append(h("button", { class: "door past", type: "button", style: ringVars(m.ring), onclick: () => openDialog(m.id), "aria-label": `${m.name}: read kudos` },
+          h("span", { class: "small-num", text: `No. ${m.day}` }),
+          h("span", { class: "mini" }, face(m)),
+          h("span", { class: "who", text: m.name }),
+          h("span", { class: "tally", text: `${n} kudos` })));
+      } else if (m.state === "today") {
+        box.append(h("div", { class: "door today" },
+          h("span", { class: "small-num", text: `No. ${m.day} · today` }),
+          h("span", { class: "mini" }, face(m)),
+          h("span", { class: "who", text: m.name })));
+      } else {
+        box.append(h("div", { class: "door" },
+          h("span", { class: "tag" }, h("span", { class: "num", text: String(m.day) }), h("span", { class: "when", text: short(m.date) }))));
+      }
+    });
+  }
+
+  // ---------- dialog ----------
+  function openDialog(id) {
+    S.openId = id;
+    renderDialog(id);
+    const d = $("dlg");
+    if (!d.open) { try { d.showModal(); } catch { d.setAttribute("open", ""); } }
+  }
+  function closeDialog() { S.openId = null; const d = $("dlg"); if (d.close) d.close(); else d.removeAttribute("open"); }
+  $("dlgClose").addEventListener("click", closeDialog);
+  $("dlg").addEventListener("click", (e) => { if (e.target === $("dlg")) closeDialog(); });
+
+  function renderDialog(id) {
+    const m = schedule().find((x) => x.id === id);
+    if (!m) { closeDialog(); return; }
+    $("dlgPortrait").replaceChildren(face(m));
+    $("dlgPortrait").style.cssText = ringVars(m.ring);
+    $("dlgName").textContent = m.name;
+    $("dlgWhen").textContent = `Window ${m.day} · ${long(m.date)}${m.role ? " · " + m.role : ""}`;
+    const body = $("dlgBody");
+    const list = S.revealed[id];
+    if (!list) {
+      body.replaceChildren(h("p", { class: "note", text: `${m.name}'s kudos are still wrapped. They're revealed at midnight on their day.` }));
+      return;
+    }
+    if (!list.length) {
+      body.replaceChildren(h("p", { class: "note", text: `Nobody left kudos for ${m.name} that day.` }));
+      return;
+    }
+    body.replaceChildren(
+      h("p", { class: "eyebrow", text: `${list.length} ${list.length === 1 ? "message" : "messages"} from the team` }),
+      ...list.map((k, i) => {
+        const at = k.at ? new Date(k.at) : null;
+        const ring = RINGS[i % RINGS.length];
+        return h("article", { class: "kudo", style: `--tag:${ring.ring}` },
+          h("span", { class: "anon", style: "display:grid;place-items:center" }, h("span", { class: "initials", style: "font-size:13px", text: initialsOf(k.name) })),
+          h("div", {},
+            h("div", { class: "by" }, k.name || "Someone on the team", at && !isNaN(at) ? h("time", { datetime: k.at, text: fmtTime.format(at) }) : null),
+            h("p", { class: "txt", text: k.text })));
+      }));
+  }
+
+  // ---------- kudos writes ----------
+  async function sendKudo(m, name, text, btn) {
+    const t = text.trim().slice(0, MAX_LEN);
+    const n = name.trim().slice(0, 60);
+    if (!t || !n || S.sending) return;
+    S.sending = true; if (btn) btn.disabled = true;
+    const had = !!S.mine[m.id];
+    try {
+      await api("kudos", { method: "PUT", body: { memberId: m.id, name: n, text: t } });
+      store.set("aok-name", n);
+      burst(btn);
+      toast(had ? "Kudos updated" : `Kudos sent to ${firstName(m.name)}`);
+      if (document.activeElement) document.activeElement.blur();
+    } catch (e) {
+      toast(e.message || "Couldn't save. Try again in a moment.");
+    } finally {
+      S.sending = false;
+    }
+    await refresh();
+  }
+  async function removeKudo(m) {
+    try { await api("kudos", { method: "DELETE", body: { memberId: m.id } }); toast("Kudos taken back"); }
+    catch (e) { toast(e.message || "Couldn't remove them."); }
+    await refresh();
+  }
+
+  // ---------- organizer ----------
+  async function checkAdmin(key) {
+    const prev = S.adminKey;
+    S.adminKey = key;
+    try { await api("admin/check", { admin: true }); return true; }
+    catch (e) { S.adminKey = prev; throw e; }
+  }
+
+  $("organizerBtn").addEventListener("click", () => {
+    if (S.canEdit) { $("adminPanel").scrollIntoView({ behavior: reduced ? "auto" : "smooth" }); return; }
+    S.showLogin = true; render();
+    $("adminPanel").scrollIntoView({ behavior: reduced ? "auto" : "smooth" });
+    setTimeout(() => $("loginPass").focus(), 50);
+  });
+  $("loginCancel").addEventListener("click", () => { S.showLogin = false; render(); });
+  $("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const key = $("loginPass").value;
+    if (!key) return;
+    try {
+      await checkAdmin(key);
+      store.set("aok-admin", key);
+      S.canEdit = true; S.showLogin = false;
+      S.preview = store.get("aok-preview") || null;
+      $("loginForm").reset();
+      toast("Signed in as the organizer");
+      await refresh();
+    } catch (err) {
+      toast(err.message || "Couldn't sign in.");
+    }
+  });
+  $("logoutBtn").addEventListener("click", () => {
+    store.set("aok-admin", null); store.set("aok-preview", null);
+    Object.assign(S, { adminKey: null, canEdit: false, preview: null });
+    toast("Signed out"); refresh();
+  });
+
+  let armedDelete = null;
+  function renderAdmin(sched) {
+    $("adminPanel").hidden = !(S.canEdit || S.showLogin);
+    $("loginForm").hidden = S.canEdit;
+    $("adminDetails").hidden = !S.canEdit;
+    $("organizerBtn").textContent = S.canEdit ? "Organizer panel" : "Organizer";
+    if (!S.canEdit) return;
+    const cfg = S.config || {};
+    if (document.activeElement !== $("cfgStart")) $("cfgStart").value = cfg.start || "";
+    if (document.activeElement !== $("cfgWeekdays")) $("cfgWeekdays").checked = !!cfg.weekdaysOnly;
+    if (document.activeElement !== $("cfgTz")) $("cfgTz").value = cfg.tz || "";
+    $("previewDate").value = S.preview || "";
+    const ul = $("roster");
+    ul.replaceChildren();
+    if (!sched.length) { ul.append(h("li", { style: "grid-template-columns:1fr" }, h("span", { class: "hint", text: "You haven't added anyone yet." }))); return; }
+    sched.forEach((m, i) => {
+      const photoInput = h("input", { type: "file", accept: "image/*", "aria-label": `Change ${m.name}'s photo`, onchange: async (e) => {
+        const f = e.target.files && e.target.files[0]; if (!f) return;
+        try {
+          const photo = await shrink(f);
+          await api("admin/members/" + encodeURIComponent(m.id), { method: "PATCH", admin: true, body: { photo } });
+          toast("Photo updated"); await refresh();
+        } catch (err) { toast(err.message || "Couldn't use that image. Try a JPG or PNG."); }
+      } });
+      const delBtn = h("button", { class: "btn danger small" + (armedDelete === m.id ? " armed" : ""), type: "button",
+        text: armedDelete === m.id ? "Sure? Remove" : "Remove",
+        onclick: async () => {
+          if (armedDelete !== m.id) { armedDelete = m.id; render(); setTimeout(() => { if (armedDelete === m.id) { armedDelete = null; render(); } }, 4000); return; }
+          armedDelete = null;
+          try { await api("admin/members/" + encodeURIComponent(m.id), { method: "DELETE", admin: true }); toast(`${m.name} is off the calendar`); }
+          catch (err) { toast(err.message || "Couldn't remove them."); }
+          await refresh();
+        } });
+      ul.append(h("li", {},
+        h("span", { class: "d", text: `${m.day} · ${short(m.date)}` }),
+        h("span", { class: "mini", style: ringVars(m.ring) }, face(m)),
+        h("span", { class: "nm", text: m.name }, m.role ? h("small", { text: m.role }) : null),
+        h("span", { class: "acts" },
+          h("button", { class: "icon-btn", type: "button", "aria-label": `Move ${m.name} up`, disabled: i === 0, text: "↑", onclick: () => move(sched, i, i - 1) }),
+          h("button", { class: "icon-btn", type: "button", "aria-label": `Move ${m.name} down`, disabled: i === sched.length - 1, text: "↓", onclick: () => move(sched, i, i + 1) }),
+          h("label", { class: "icon-btn photo-label", text: "Photo" }, photoInput),
+          delBtn)));
+    });
+  }
+
+  async function move(sched, a, b) {
+    const ids = sched.map((m) => m.id);
+    [ids[a], ids[b]] = [ids[b], ids[a]];
+    try { await api("admin/order", { method: "PUT", admin: true, body: { ids } }); }
+    catch (err) { toast(err.message || "Couldn't change the order."); }
+    await refresh();
+  }
+
+  function shrink(file) {
+    return new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onerror = reject;
+      r.onload = () => {
+        const img = new Image();
+        img.onerror = reject;
+        img.onload = () => {
+          const side = 240, c = document.createElement("canvas");
+          c.width = c.height = side;
+          const sq = Math.min(img.width, img.height);
+          c.getContext("2d").drawImage(img, (img.width - sq) / 2, (img.height - sq) / 2, sq, sq, 0, 0, side, side);
+          resolve(c.toDataURL("image/jpeg", 0.82));
+        };
+        img.src = r.result;
+      };
+      r.readAsDataURL(file);
+    });
+  }
+
+  $("addForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const name = $("addName").value.trim();
+    if (!name) return;
+    const btn = $("addBtn"); btn.disabled = true;
+    try {
+      const f = $("addPhoto").files && $("addPhoto").files[0];
+      let photo = null;
+      if (f) { try { photo = await shrink(f); } catch { toast("Couldn't read the photo; adding them without one."); } }
+      await api("admin/members", { method: "POST", admin: true, body: { name, role: $("addRole").value.trim(), photo } });
+      $("addForm").reset();
+      toast(`${name} added to the calendar`);
+      await refresh();
+    } catch (err) {
+      toast(err.message || "Couldn't add them. Try again.");
+    } finally { btn.disabled = false; }
+  });
+
+  $("cfgForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const start = $("cfgStart").value;
+    if (!start) { toast("Pick the first day."); return; }
+    try {
+      await api("admin/config", { method: "PUT", admin: true, body: { start, weekdaysOnly: $("cfgWeekdays").checked, tz: $("cfgTz").value.trim() } });
+      toast("Dates saved");
+      await refresh();
+    } catch (err) { toast(err.message || "Couldn't save the dates."); }
+  });
+
+  $("previewDate").addEventListener("change", (e) => {
+    S.preview = e.target.value || null;
+    store.set("aok-preview", S.preview);
+    render();
+  });
+  $("previewClear").addEventListener("click", () => { S.preview = null; store.set("aok-preview", null); render(); });
+
+  // ---------- boot ----------
+  render();
+  (async () => {
+    if (S.adminKey) {
+      try { await checkAdmin(S.adminKey); S.canEdit = true; S.preview = store.get("aok-preview") || null; }
+      catch (e) { if (e.status === 401) { store.set("aok-admin", null); S.adminKey = null; } }
+    }
+    await refresh();
+  })();
+  // Keep counts fresh and hang the day's bauble at midnight without a reload.
+  setInterval(() => { if (!document.hidden) refresh(); }, POLL_MS);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) refresh(); });
+})();
+</script>
+</body>
+</html>

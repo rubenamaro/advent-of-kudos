@@ -1,0 +1,10 @@
+{
+  "name": "advent-of-kudos",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler pages dev public --d1 DB --binding ADMIN_PASSWORD=letmein"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
