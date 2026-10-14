@@ -259,7 +259,9 @@ async function admin(request, env, rest) {
   return fail("Not found.", 404);
 }
 
-export async function onRequest({ request, env, params }) {
+export async function onRequest({ request, env: rawEnv, params }) {
+  // Accept the D1 binding as DB or db, since the dashboard field is case-sensitive.
+  const env = { ...rawEnv, DB: rawEnv.DB || rawEnv.db };
   if (!env.DB) return fail("The D1 database isn't connected. Add a D1 binding named DB in the Pages project settings.", 503);
   const path = [].concat(params.path || []);
   const [head, ...rest] = path;
