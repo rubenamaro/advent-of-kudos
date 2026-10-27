@@ -8,8 +8,8 @@ Calendario de adviento para el equipo. Cada día se abre una ventana con una per
 
 ## Cómo funciona
 
-- El organizador entra con una contraseña (`ADMIN_PASSWORD`), añade al equipo (nombre, rol y foto), elige el primer día, la zona horaria y si se saltan los fines de semana.
-- Cada persona ocupa un día, en el orden del panel.
+- El organizador entra con una contraseña (`ADMIN_PASSWORD`), añade al equipo (nombre, rol y foto), elige el primer día y la zona horaria.
+- Cada persona ocupa un día laborable, en el orden del panel. Los sábados y domingos no sale nadie.
 - Solo se pueden enviar kudos a la persona del día. Cada navegador puede dejar uno por persona y editarlo o retirarlo hasta medianoche.
 - Los mensajes se mantienen ocultos hasta medianoche: el servidor solo los envía cuando su día ha terminado (el organizador los ve siempre).
 - La página se actualiza sola cada 30 segundos.

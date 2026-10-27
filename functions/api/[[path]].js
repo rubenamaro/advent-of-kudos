@@ -56,14 +56,14 @@ async function loadConfig(db) {
   const raw = Object.fromEntries(results.map((r) => [r.k, r.v]));
   const tz = raw.tz && validTz(raw.tz) ? raw.tz : DEFAULT_TZ;
   const start = isDate(raw.start) ? raw.start : `${todayIn(tz).slice(0, 4)}-12-01`;
-  return { start, tz, weekdaysOnly: raw.weekdaysOnly === "1" };
+  return { start, tz };
 }
 
-// Same rule as the page: members in order, one day each from `start`, optionally skipping weekends.
+// Same rule as the page: members in order, one weekday each from `start`. Nobody comes out on Saturdays or Sundays.
 function schedule(members, cfg) {
   const d = new Date(cfg.start + "T00:00:00Z");
   return members.map((m, i) => {
-    if (cfg.weekdaysOnly) while (d.getUTCDay() === 0 || d.getUTCDay() === 6) d.setUTCDate(d.getUTCDate() + 1);
+    while (d.getUTCDay() === 0 || d.getUTCDay() === 6) d.setUTCDate(d.getUTCDate() + 1);
     const date = d.toISOString().slice(0, 10);
     d.setUTCDate(d.getUTCDate() + 1);
     return { ...m, day: i + 1, date };
@@ -252,7 +252,7 @@ async function admin(request, env, rest) {
     const tz = cleanText(body.tz, 64) || DEFAULT_TZ;
     if (!validTz(tz)) return fail("That time zone isn't recognized. Try something like Europe/Madrid.");
     const put = (k, v) => db.prepare("INSERT INTO settings (k, v) VALUES (?, ?) ON CONFLICT (k) DO UPDATE SET v = excluded.v").bind(k, v);
-    await db.batch([put("start", body.start), put("tz", tz), put("weekdaysOnly", body.weekdaysOnly ? "1" : "0")]);
+    await db.batch([put("start", body.start), put("tz", tz)]);
     return json({ ok: true });
   }
 

@@ -622,10 +622,9 @@ dialog .btn.quiet { background: rgba(42, 29, 20, .08); color: var(--paper-ink); 
           <h3>Dates</h3>
           <form class="stack" id="cfgForm">
             <label class="field"><span>First day</span><input type="date" id="cfgStart"></label>
-            <label class="check"><input type="checkbox" id="cfgWeekdays"> Skip Saturdays and Sundays</label>
             <label class="field"><span>Time zone (when each day starts and ends)</span><input type="text" id="cfgTz" placeholder="Europe/Madrid" list="tzList" autocomplete="off"></label>
             <datalist id="tzList"><option value="Europe/Madrid"></option><option value="Europe/London"></option><option value="Europe/Lisbon"></option><option value="Europe/Berlin"></option><option value="America/New_York"></option><option value="America/Chicago"></option><option value="America/Los_Angeles"></option><option value="America/Mexico_City"></option><option value="America/Bogota"></option><option value="America/Argentina/Buenos_Aires"></option><option value="Asia/Tokyo"></option><option value="UTC"></option></datalist>
-            <div class="form-row"><span class="hint">Each person gets one day, starting on this date.</span><button class="btn quiet" type="submit">Save dates</button></div>
+            <div class="form-row"><span class="hint">Each person gets one weekday, starting on this date. Nobody comes out on Saturdays or Sundays.</span><button class="btn quiet" type="submit">Save dates</button></div>
           </form>
 
           <h3>Try another date</h3>
@@ -876,11 +875,11 @@ dialog .btn.quiet { background: rgba(42, 29, 20, .08); color: var(--paper-ink); 
   const iso = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 
   function placeholderDates(n) {
-    const cfg = S.config || { start: `${new Date().getFullYear()}-12-01`, weekdaysOnly: false };
+    const cfg = S.config || { start: `${new Date().getFullYear()}-12-01` };
     const out = [];
     const d = parse(cfg.start);
     while (out.length < n) {
-      if (cfg.weekdaysOnly) while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1);
+      while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1);
       out.push(iso(d));
       d.setDate(d.getDate() + 1);
     }
@@ -1028,6 +1027,14 @@ dialog .btn.quiet { background: rgba(42, 29, 20, .08); color: var(--paper-ink); 
           h("div", { class: "honoree-text" },
             h("h2", { text: left === 1 ? "sleep until the first window" : "sleeps until the first window" }),
             h("p", { class: "hint", text: `It all starts on ${long(next.date)}. Who comes out each day is a surprise.` }))),
+      );
+      return;
+    }
+    const dow = parse(today()).getDay();
+    if (next && (dow === 0 || dow === 6)) {
+      box.append(
+        h("h2", { text: "It's the weekend: no window today" }),
+        h("p", { class: "hint", text: `The calendar rests on Saturdays and Sundays. The next window opens on ${long(next.date)}.` }),
       );
       return;
     }
@@ -1243,7 +1250,6 @@ dialog .btn.quiet { background: rgba(42, 29, 20, .08); color: var(--paper-ink); 
     if (!S.canEdit) return;
     const cfg = S.config || {};
     if (document.activeElement !== $("cfgStart")) $("cfgStart").value = cfg.start || "";
-    if (document.activeElement !== $("cfgWeekdays")) $("cfgWeekdays").checked = !!cfg.weekdaysOnly;
     if (document.activeElement !== $("cfgTz")) $("cfgTz").value = cfg.tz || "";
     $("previewDate").value = S.preview || "";
     const ul = $("roster");
@@ -1330,7 +1336,7 @@ dialog .btn.quiet { background: rgba(42, 29, 20, .08); color: var(--paper-ink); 
     const start = $("cfgStart").value;
     if (!start) { toast("Pick the first day."); return; }
     try {
-      await api("admin/config", { method: "PUT", admin: true, body: { start, weekdaysOnly: $("cfgWeekdays").checked, tz: $("cfgTz").value.trim() } });
+      await api("admin/config", { method: "PUT", admin: true, body: { start, tz: $("cfgTz").value.trim() } });
       toast("Dates saved");
       await refresh();
     } catch (err) { toast(err.message || "Couldn't save the dates."); }
